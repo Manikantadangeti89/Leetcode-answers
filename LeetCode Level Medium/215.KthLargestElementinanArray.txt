@@ -1,0 +1,56 @@
+215. Kth Largest Element in an Array
+
+Given an integer array nums and an integer k, return the kth largest element in the array.
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+Can you solve it without sorting?
+
+Example 1:
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+
+Example 2:
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+
+Constraints:
+1 <= k <= nums.length <= 105
+-104 <= nums[i] <= 104
+
+code:
+
+class Solution {
+public:
+    void swap(int& a,int& b){
+        int temp=a;
+        a=b;
+        b=temp;
+    }
+    int partition(vector<int>& nums,int low,int high){
+        int pivotIndex = low + rand() % (high - low + 1);
+        Solution::swap(nums[pivotIndex], nums[high]);
+        int pivot=nums[high];
+        int i=low-1;
+        for(int j=low;j<high;j++){
+            if(nums[j]<pivot){
+                i++;
+                Solution::swap(nums[i],nums[j]);
+            }
+        }
+        Solution::swap(nums[i+1],nums[high]);
+        return i+1;
+    }
+    void quicksort(vector<int>& nums,int l,int r){
+        if(l<r){
+            int pi=partition(nums,l,r);
+
+            Solution::quicksort(nums,l,pi-1);
+            Solution::quicksort(nums,pi+1,r);
+        }
+    }
+    int findKthLargest(vector<int>& nums, int k) {
+        int size=nums.size();
+        quicksort(nums,0,size-1);
+
+        return nums[size-k];
+    }
+};
