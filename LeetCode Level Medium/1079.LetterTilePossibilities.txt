@@ -1,0 +1,41 @@
+1079. Letter Tile Possibilities
+
+You have n  tiles, where each tile has one letter tiles[i] printed on it.
+Return the number of possible non-empty sequences of letters you can make using the letters printed on those tiles.
+
+Example 1:
+Input: tiles = "AAB"
+Output: 8
+Explanation: The possible sequences are "A", "B", "AA", "AB", "BA", "AAB", "ABA", "BAA".
+
+Example 2:
+Input: tiles = "AAABBC"
+Output: 188
+
+Example 3:
+Input: tiles = "V"
+Output: 1
+ 
+Constraints:
+1 <= tiles.length <= 7
+tiles consists of uppercase English letters.
+
+code:
+
+class Solution {
+    public void countways(String p,String up,HashSet<String> set){
+        if (!p.isEmpty()) {
+            set.add(p);
+        }
+        for (int i = 0; i < up.length(); i++) {
+            char ch = up.charAt(i);
+            String remaining = up.substring(0, i) + up.substring(i + 1);
+            countways(p + ch, remaining, set);
+        }
+    }
+    public int numTilePossibilities(String tiles) {
+        HashSet<String> set=new HashSet<>();
+        countways("",tiles,set);
+        return set.size();
+    }
+}
