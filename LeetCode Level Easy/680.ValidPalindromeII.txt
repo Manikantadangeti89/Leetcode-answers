@@ -1,0 +1,68 @@
+680. Valid Palindrome II
+
+Given a string s, return true if the s can be palindrome after deleting at most one character from it.
+
+Example 1:
+Input: s = "aba"
+Output: true
+
+Example 2:
+Input: s = "abca"
+Output: true
+Explanation: You could delete the character 'c'.
+
+Example 3:
+Input: s = "abc"
+Output: false
+
+Constraints:
+1 <= s.length <= 105
+s consists of lowercase English letters.
+
+code:
+
+class Solution {
+    public boolean isPalindrome(char[] s, int left, int right) {
+        while (left < right) {
+            if (s[left] != s[right]) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    public boolean validPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return isPalindrome(s.toCharArray(), left + 1, right) 
+                || isPalindrome(s.toCharArray(), left, right - 1);
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+
+// class Solution {
+//     public boolean ispalindrome(String s){
+//         int n=s.length();
+//         for(int i=0;i<n/2;i++){
+//             char ch1=s.charAt(i);
+//             char ch2=s.charAt(n-(i+1));
+//             if(ch1!=ch2){
+//                 return false;
+//             }
+//         }
+//         return true;
+//     }
+//     public boolean validPalindrome(String s) {
+//         for(int i=0;i<s.length();i++){
+//             if(ispalindrome(s.substring(0,i)+s.substring(i+1))){
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
+// }
