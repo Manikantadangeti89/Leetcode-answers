@@ -1,0 +1,89 @@
+2563. Count the Number of Fair Pairs
+
+Given a 0-indexed integer array nums of size n and two integers lower and upper, return the number of fair pairs.
+A pair (i, j) is fair if:
+0 <= i < j < n, and
+lower <= nums[i] + nums[j] <= upper
+
+Example 1:
+Input: nums = [0,1,7,4,4,5], lower = 3, upper = 6
+Output: 6
+Explanation: There are 6 fair pairs: (0,3), (0,4), (0,5), (1,3), (1,4), and (1,5).
+
+Example 2:
+Input: nums = [1,7,9,2,5], lower = 11, upper = 11
+Output: 1
+Explanation: There is a single fair pair: (2,3).
+
+Constraints:
+1 <= nums.length <= 105
+nums.length == n
+-109 <= nums[i] <= 109
+-109 <= lower <= upper <= 109
+
+code:
+
+class Solution {
+    // public long countFairPairs(int[] nums, int lower, int upper) {
+    //     // Brute-Force Approach
+    //     // int count = 0;
+    //     // for(int i=0;i<nums.length;i++){
+    //     //     for(int j=i+1;j<nums.length;j++){
+    //     //         int sum = nums[i]+nums[j];
+    //     //         if(sum>=lower && sum<=upper){
+    //     //             count++;
+    //     //         }
+    //     //     }
+    //     // }
+    //     // return count;
+    // }
+    static int findLeft(int[] nums,int lower,int upper, int start,int end){
+        int left = end+1;
+        while(start<=end){
+            int mid = start + (end-start)/2;
+            if(nums[mid]>=lower && nums[mid]<=upper){
+                left = mid;
+                end = mid-1;
+            }
+            else if(nums[mid]>upper){
+                end = mid-1;
+            }
+            else{
+                start = mid+1;
+            }
+        }
+        return left;
+    }
+    static int findRight(int[] nums,int lower,int upper, int start,int end){
+        int right = start-1;
+        while(start<=end){
+            int mid = start + (end-start)/2;
+            if(nums[mid]>=lower && nums[mid]<=upper){
+                right = mid;
+                start = mid +1;
+            }
+            else if(nums[mid]<lower){
+                start = mid+1;
+            }
+            else{
+                end = mid-1;
+            }
+        }
+        return right;
+    }
+    public long countFairPairs(int[] nums, int lower, int upper) {
+        long count = 0;
+        int n = nums.length;
+        Arrays.sort(nums);
+        for(int i=0;i<n;i++){
+            int newLower = lower - nums[i];
+            int newUpper = upper - nums[i];
+            int left = findLeft(nums, newLower, newUpper, i+1, n-1);
+            int right = findRight(nums, newLower, newUpper, i+1, n-1);
+            if(left<=right){
+                count += (right-left+1);
+            }
+        }
+        return count;
+    }
+}
