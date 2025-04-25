@@ -1,0 +1,72 @@
+10. Regular Expression Matching
+
+Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
+'.' Matches any single character.​​​​
+'*' Matches zero or more of the preceding element.
+The matching should cover the entire input string (not partial).
+
+Example 1:
+Input: s = "aa", p = "a"
+Output: false
+Explanation: "a" does not match the entire string "aa".
+
+Example 2:
+Input: s = "aa", p = "a*"
+Output: true
+Explanation: '*' means zero or more of the preceding element, 'a'. Therefore, by repeating 'a' once, it becomes "aa".
+
+Example 3:
+Input: s = "ab", p = ".*"
+Output: true
+Explanation: ".*" means "zero or more (*) of any character (.)".
+ 
+Constraints:
+1 <= s.length <= 20
+1 <= p.length <= 20
+s contains only lowercase English letters.
+p contains only lowercase English letters, '.', and '*'.
+It is guaranteed for each appearance of the character '*', there will be a previous valid character to match.
+
+code:
+
+class Solution {
+    static boolean helper(String s, String p, int i, int j, int[][] dp){
+        if(j==p.length()){
+            dp[i][j] = i==s.length() ? 1 : 0;
+            return dp[i][j] == 1;
+        }
+
+        if(dp[i][j] != -1){
+            return dp[i][j]==1;
+        }
+
+        boolean case1 = i<s.length() && s.charAt(i)==p.charAt(j);  // two characters match
+        boolean case2 = i<s.length() && p.charAt(j)=='.'; // '.' character
+        boolean curMatch = case1 || case2;
+
+        // Check for * case
+        if((j+1)<p.length() && p.charAt(j+1)=='*'){
+            boolean skip = helper(s, p, i, j+2, dp);
+            boolean take = curMatch && helper(s, p, i+1, j, dp);
+            dp[i][j] = skip || take ? 1 : 0;
+            return dp[i][j] == 1;
+        }
+
+        // if case3 fails then 
+        // then verify if case1/case2 succeeds and move ahead
+        if(curMatch){
+            dp[i][j] = helper(s, p, i+1, j+1, dp) ? 1 : 0;
+            return dp[i][j] == 1;
+        }
+
+        dp[i][j] = 0;
+        return dp[i][j]==1;
+    }
+    public boolean isMatch(String s, String p) {
+        int[][] dp = new int[s.length()+1][p.length()+1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        } 
+        return helper(s, p, 0, 0, dp);
+    }
+}
